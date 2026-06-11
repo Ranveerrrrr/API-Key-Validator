@@ -2,12 +2,12 @@
 
 KeyHacks is a local web application for safely identifying and validating exposed API credentials during authorized security testing and bug bounty work.
 
-The app accepts a pasted key or credential snippet, checks Google first, then attempts provider-specific detection and validation across supported providers. For AI providers, it lists available chat-capable models and lets you test approved prompts against a selected model. For all supported providers, it can generate a professional bug bounty report with neutral reporter fields, impact language, remediation guidance, and export options.
+The app accepts a pasted key or credential snippet, identifies the provider, and attempts provider-specific detection and validation across supported companies. For AI providers, it lists available chat-capable models and lets you test approved prompts against a selected model. For all supported providers, it can generate a professional bug bounty report with neutral reporter fields, impact language, remediation guidance, and export options.
 
 ## Features
 
 - Auto-detects provider from a single pasted key or credential snippet.
-- Checks Google first before attempting OpenAI, Anthropic, DeepSeek, and the broader KeyHacks provider registry.
+- Supports Google, OpenAI, Anthropic, DeepSeek, and the broader KeyHacks provider registry.
 - Lists available models/checks with consistent green/red status indicators.
 - Supports chat for validated AI model providers.
 - Keeps chat history per provider, model, and hashed key across model switches, refreshes, and server restarts without storing the raw key.
@@ -16,15 +16,13 @@ The app accepts a pasted key or credential snippet, checks Google first, then at
 
 ## Screenshots and GIFs
 
-Add real captures before publishing a release:
+[Add screenshot of the dashboard]
 
-![Dashboard placeholder](docs/screenshots/dashboard-placeholder.svg)
+[Add screenshot of provider detection results]
 
-![Provider detection placeholder](docs/screenshots/provider-detection-placeholder.svg)
+[Add screenshot of the report generator]
 
-![Report generator placeholder](docs/screenshots/report-generator-placeholder.svg)
-
-![Workflow GIF placeholder](docs/screenshots/keyhacks-workflow-placeholder.svg)
+[Add GIF of the validation and report workflow]
 
 ## Installation
 

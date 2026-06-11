@@ -45,11 +45,11 @@ const els = {
 };
 
 const START_ROWS = [
-  "Google check runs first",
-  "OpenAI auto-detect",
-  "Anthropic auto-detect",
-  "DeepSeek auto-detect",
-  "KeyHacks provider checks"
+  "Google",
+  "OpenAI",
+  "Anthropic",
+  "DeepSeek",
+  "KeyHacks registry"
 ];
 
 function escapeHtml(value) {
@@ -228,7 +228,7 @@ async function authenticate() {
 
   setLoading(true);
   els.authButton.textContent = "CHECKING";
-  els.detectedProvider.textContent = "CHECKING GOOGLE FIRST";
+  els.detectedProvider.textContent = "CHECKING PROVIDERS";
   els.detectedProvider.className = "detector-strip";
 
   try {
@@ -364,7 +364,7 @@ function modelLinesForReport() {
 
 function buildReport() {
   const provider = state.providerLabel || "Unknown provider";
-  const checked = state.checked.length ? state.checked.join(" -> ") : "Google -> OpenAI/Anthropic/DeepSeek -> KeyHacks registry";
+  const checked = state.checked.length ? state.checked.join(" -> ") : "Google, OpenAI, Anthropic, DeepSeek, KeyHacks registry";
   const models = availableModels();
   const program = els.programName.value.trim() || "[Program / company]";
   const reporter = els.reporterField.value.trim() || "[Reporter / handle]";
@@ -386,7 +386,7 @@ ${title}
 ${severity}
 
 ## Summary
-An exposed ${provider} credential was identified for ${program}. The key was checked using a non-destructive validation flow. Google was checked first, then the tool attempted supported providers until the credential type was identified.
+An exposed ${provider} credential was identified for ${program}. The key was checked using a non-destructive validation flow across supported companies.
 
 Reporter: ${reporter}
 
@@ -411,8 +411,8 @@ ${modelLinesForReport()}
 - Notes: ${notes}
 
 ## Screenshots
-- [Placeholder: screenshot of exposed location with the secret masked]
-- [Placeholder: screenshot of KeyHacks validation output]
+- [Add screenshot of the exposed location with the secret masked]
+- [Add screenshot of KeyHacks validation output]
 
 ## Recommended Fix
 1. Revoke or rotate the exposed credential immediately.
