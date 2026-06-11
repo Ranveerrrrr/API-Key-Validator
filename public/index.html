@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeyHacks</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <button id="brandButton" class="brand" type="button">KEYHACKS</button>
+
+        <section class="auth-panel">
+          <div id="detectedProvider" class="detector-strip">AUTO DETECT</div>
+          <input
+            id="apiKey"
+            class="api-input"
+            type="password"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Provider API key"
+          />
+          <div class="auth-actions">
+            <button id="authButton" class="auth-button" type="button">AUTHENTICATE</button>
+            <button id="clearKeyButton" class="icon-button" type="button" aria-label="Clear API key" title="Clear API key">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm1 7h2v8h-2v-8Zm4 0h2v8h-2v-8ZM7 8h10l-1 13H8L7 8Z" />
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <div id="modelList" class="model-list" aria-live="polite"></div>
+      </aside>
+
+      <main class="chat-pane">
+        <header class="chat-header">
+          <div id="activeModel" class="active-model">NO MODEL SELECTED</div>
+          <div class="chat-actions">
+            <button id="headerReportButton" class="clear-chat" type="button">GENERATE REPORT</button>
+            <button id="clearChatButton" class="clear-chat" type="button">CLEAR CHAT</button>
+          </div>
+        </header>
+
+        <section id="messages" class="messages" aria-live="polite">
+          <div class="empty-state">Authenticate a key and select a green model.</div>
+        </section>
+
+        <form id="chatForm" class="composer">
+          <textarea
+            id="prompt"
+            rows="1"
+            placeholder="Type command..."
+            spellcheck="true"
+          ></textarea>
+          <button id="sendButton" class="send-button" type="submit" aria-label="Send message" title="Send message">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M13 2 4 14h7l-1 8 10-13h-7l1-7Z" />
+            </svg>
+          </button>
+        </form>
+      </main>
+    </div>
+
+    <div id="reportModal" class="modal-backdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+        <header class="modal-header">
+          <div>
+            <h1 id="reportTitle">KeyHacks Report</h1>
+            <p id="reportSubtitle">Available model summary and leaked-key report builder.</p>
+          </div>
+          <button id="closeReportButton" class="icon-button" type="button" aria-label="Close report" title="Close report">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6 6.4 5Z" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="modal-grid">
+          <section class="modal-panel">
+            <div class="panel-title">Accessible Models</div>
+            <div id="reportModelList" class="report-model-list"></div>
+          </section>
+
+          <section class="modal-panel report-builder">
+            <div class="panel-title">Report Inputs</div>
+            <input id="programName" class="report-input" type="text" placeholder="Program / company name" />
+            <input id="reporterField" class="report-input" type="text" placeholder="Reporter / handle (optional)" />
+            <select id="severityField" class="report-input">
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+              <option value="Informational">Informational</option>
+            </select>
+            <input id="assetLocation" class="report-input" type="text" placeholder="Where the key was found" />
+            <select id="exposureType" class="report-input">
+              <option value="Public client-side JavaScript">Public client-side JavaScript</option>
+              <option value="Public repository commit">Public repository commit</option>
+              <option value="Public page source">Public page source</option>
+              <option value="Mobile app bundle">Mobile app bundle</option>
+              <option value="Exposed config or log">Exposed config or log</option>
+            </select>
+            <textarea id="evidenceNotes" class="report-textarea" rows="4" placeholder="Short evidence notes, scope, reproduction steps, masked key prefix, timestamps"></textarea>
+            <div class="report-actions">
+              <button id="generateReportButton" class="auth-button" type="button">GENERATE REPORT</button>
+              <button id="copyReportButton" class="secondary-button" type="button">COPY</button>
+            </div>
+            <div class="export-actions">
+              <button id="exportMarkdownButton" class="secondary-button" type="button">EXPORT MD</button>
+              <button id="exportHtmlButton" class="secondary-button" type="button">EXPORT HTML</button>
+              <button id="exportPdfButton" class="secondary-button" type="button">EXPORT PDF</button>
+            </div>
+            <textarea id="reportOutput" class="report-output" rows="14" spellcheck="false" placeholder="Generated markdown appears here."></textarea>
+          </section>
+        </div>
+      </section>
+    </div>
+    <script src="/chat-store.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>

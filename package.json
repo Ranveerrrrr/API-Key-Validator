@@ -1,0 +1,13 @@
+{
+  "name": "keyhacks-api-key-validator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KeyHacks API key validator, AI model checker, and bug bounty report generator.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/providerRegistry.test.js && node tests/chatStore.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
