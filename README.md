@@ -1,13 +1,13 @@
-# KeyHacks
+# APIKeyValidator
 
-KeyHacks is a local web application for safely identifying and validating exposed API credentials during authorized security testing and bug bounty work.
+APIKeyValidator is a local web application for safely identifying and validating exposed API credentials during authorized security testing and bug bounty work.
 
 The app accepts a pasted key or credential snippet, identifies the provider, and attempts provider-specific detection and validation across supported companies. For AI providers, it lists available chat-capable models and lets you test approved prompts against a selected model. For all supported providers, it can generate a professional bug bounty report with neutral reporter fields, impact language, remediation guidance, and export options.
 
 ## Features
 
 - Auto-detects provider from a single pasted key or credential snippet.
-- Supports Google, OpenAI, Anthropic, DeepSeek, and the broader KeyHacks provider registry.
+- Supports Google, OpenAI, Anthropic, DeepSeek, Slack, GitHub, Stripe, Cloudflare, AWS, and many other companies listed below.
 - Lists available models/checks with consistent green/red status indicators.
 - Supports chat for validated AI model providers.
 - Keeps chat history per provider, model, and hashed key across model switches, refreshes, and server restarts without storing the raw key.
@@ -59,6 +59,24 @@ Optional cron keepalive:
 ```cron
 @reboot /path/to/API-Key-Validator/start.sh >> /path/to/API-Key-Validator/cron.log 2>&1
 */5 * * * * /path/to/API-Key-Validator/start.sh >> /path/to/API-Key-Validator/cron.log 2>&1
+```
+
+## Repository File Map
+
+```text
+README.md                      Project documentation, usage, provider list, and credits.
+package.json                   Node scripts and project metadata.
+server.js                      HTTP server, API routes, AI provider model checks, and chat proxy.
+lib/providerRegistry.js        Provider/key-pattern dataset, detection helpers, and validation request builders.
+public/index.html              Main dashboard markup.
+public/styles.css              Dashboard styling and responsive layout.
+public/app.js                  Browser UI logic, report generator, exports, and provider/model state.
+public/chat-store.js           Per-provider/model chat history persistence using hashed key IDs.
+tests/providerRegistry.test.js Provider detection and validation helper tests.
+tests/chatStore.test.js        Chat persistence tests.
+start.sh                       Portable Linux start script for background deployment.
+stop.sh                        Portable Linux stop script for background deployment.
+docs/screenshots/.gitkeep      Empty folder marker for screenshots you add later.
 ```
 
 ## Usage
@@ -502,7 +520,7 @@ Providers are listed by company first, with supported key types underneath each 
 
 ## Validation Notes
 
-Some credentials require extra context such as a tenant ID, application ID, account domain, username, project ID, or matching secret. KeyHacks detects those formats and reports the missing context instead of guessing or running unsafe requests.
+Some credentials require extra context such as a tenant ID, application ID, account domain, username, project ID, or matching secret. APIKeyValidator detects those formats and reports the missing context instead of guessing or running unsafe requests.
 
 Provider checks are intentionally low-impact. Avoid endpoints that send messages, mutate data, create resources, or consume significant paid quota unless the program explicitly authorizes that testing.
 
@@ -511,15 +529,6 @@ Provider checks are intentionally low-impact. Avoid endpoints that send messages
 ```bash
 npm test
 HOST=127.0.0.1 PORT=8099 npm start
-```
-
-Project layout:
-
-```text
-server.js                 HTTP server and provider routing
-lib/providerRegistry.js   Supported provider metadata and validation helpers
-public/                   Browser UI
-tests/                    Automated tests
 ```
 
 ## Contributing
@@ -542,14 +551,20 @@ Provider contributions should include:
 
 ## Disclaimer and Responsible Usage
 
-Use KeyHacks only on assets and credentials that you are authorized to test.
+Use APIKeyValidator only on assets and credentials that you are authorized to test.
 
 Do not use this tool to access accounts, data, systems, or services without explicit permission. Do not run high-volume prompts, send messages, create resources, mutate data, or intentionally incur costs unless the bug bounty program or assessment scope clearly allows it.
 
 Treat exposed credentials as compromised. Reports should include masked evidence only. Never include full live secrets in screenshots, tickets, pull requests, commits, or public issues.
 
+## Credits
+
+- KeyHacks by streaak is credited as the provider/key-format data and research baseline used to map how many API keys look and how they can be checked.
+- Additional provider patterns, validation behavior, and report workflow were added through APIKeyValidator research.
+- UI inspiration credit: [coffinxp](https://github.com/coffinxp). The dashboard style was inspired by a video/UI workflow from coffinxp.
+
 ## References
 
-- [Upstream KeyHacks provider list](https://github.com/streaak/keyhacks/blob/master/README.md)
+- [KeyHacks provider list](https://github.com/streaak/keyhacks/blob/master/README.md)
 - [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 - [GitHub secret scanning remediation](https://docs.github.com/en/code-security/secret-scanning/managing-alerts-from-secret-scanning/resolving-alerts)

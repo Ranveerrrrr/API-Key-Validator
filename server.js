@@ -585,5 +585,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`KeyHacks listening on http://${HOST}:${PORT}`);
+  console.log(`APIKeyValidator listening on http://${HOST}:${PORT}`);
 });

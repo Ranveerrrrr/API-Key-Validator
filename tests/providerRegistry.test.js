@@ -16,7 +16,7 @@ test("every provider has a sample that detects itself", () => {
   assert.deepEqual(missing, []);
 });
 
-test("registry contains all upstream KeyHacks providers plus AI providers", () => {
+test("registry contains upstream research providers plus AI providers", () => {
   const ids = new Set(PROVIDER_SPECS.map((spec) => spec.id));
   for (const id of [
     "abtasty",

@@ -1,4 +1,4 @@
-const chatStore = window.KeyHacksChatStore;
+const chatStore = window.APIKeyValidatorChatStore;
 
 const state = {
   apiKey: "",
@@ -49,7 +49,11 @@ const START_ROWS = [
   "OpenAI",
   "Anthropic",
   "DeepSeek",
-  "KeyHacks registry"
+  "Slack",
+  "GitHub",
+  "Stripe",
+  "Cloudflare",
+  "AWS"
 ];
 
 function escapeHtml(value) {
@@ -364,7 +368,7 @@ function modelLinesForReport() {
 
 function buildReport() {
   const provider = state.providerLabel || "Unknown provider";
-  const checked = state.checked.length ? state.checked.join(" -> ") : "Google, OpenAI, Anthropic, DeepSeek, KeyHacks registry";
+  const checked = state.checked.length ? state.checked.join(" -> ") : "Google, OpenAI, Anthropic, DeepSeek, Slack, GitHub, Stripe, Cloudflare, AWS, and other supported companies";
   const models = availableModels();
   const program = els.programName.value.trim() || "[Program / company]";
   const reporter = els.reporterField.value.trim() || "[Reporter / handle]";
@@ -393,7 +397,7 @@ Reporter: ${reporter}
 ## Steps to Reproduce
 1. Locate the exposed credential in the affected asset.
 2. Record only a masked version of the secret in evidence.
-3. Submit the credential to KeyHacks validation.
+3. Submit the credential to APIKeyValidator validation.
 4. Confirm the detected provider and available checks/models.
 5. Avoid destructive prompts, high-volume requests, or actions outside the program scope.
 
@@ -412,7 +416,7 @@ ${modelLinesForReport()}
 
 ## Screenshots
 - [Add screenshot of the exposed location with the secret masked]
-- [Add screenshot of KeyHacks validation output]
+- [Add screenshot of APIKeyValidator validation output]
 
 ## Recommended Fix
 1. Revoke or rotate the exposed credential immediately.
@@ -452,7 +456,7 @@ async function copyReport() {
 
 function reportFilename(extension) {
   const provider = (state.providerLabel || "provider").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return `keyhacks-${provider || "provider"}-report.${extension}`;
+  return `apikeyvalidator-${provider || "provider"}-report.${extension}`;
 }
 
 function downloadBlob(filename, blob) {
@@ -482,7 +486,7 @@ function exportHtml() {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>KeyHacks Report</title>
+  <title>APIKeyValidator Report</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.55; margin: 40px; color: #171923; }
     pre { white-space: pre-wrap; font-family: inherit; }
