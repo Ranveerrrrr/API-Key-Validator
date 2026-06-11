@@ -18,13 +18,13 @@ The app accepts a pasted key or credential snippet, checks Google first, then at
 
 Add real captures before publishing a release:
 
-![Dashboard placeholder](docs/screenshots/dashboard-placeholder.png)
+![Dashboard placeholder](docs/screenshots/dashboard-placeholder.svg)
 
-![Provider detection placeholder](docs/screenshots/provider-detection-placeholder.png)
+![Provider detection placeholder](docs/screenshots/provider-detection-placeholder.svg)
 
-![Report generator placeholder](docs/screenshots/report-generator-placeholder.png)
+![Report generator placeholder](docs/screenshots/report-generator-placeholder.svg)
 
-![Workflow GIF placeholder](docs/screenshots/keyhacks-workflow-placeholder.gif)
+![Workflow GIF placeholder](docs/screenshots/keyhacks-workflow-placeholder.svg)
 
 ## Installation
 
