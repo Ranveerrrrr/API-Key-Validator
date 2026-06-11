@@ -14,15 +14,22 @@ The app accepts a pasted key or credential snippet, identifies the provider, and
 - Generates bug bounty reports with copy, Markdown export, HTML export, and PDF export.
 - Runs as a dependency-free Node.js app.
 
-## Screenshots and GIFs
+## Preview
 
-[Add screenshot of the dashboard]
+<img width="1919" height="956" alt="image" src="https://github.com/user-attachments/assets/99c22c01-b893-47a5-86de-5d4541333815" />
 
-[Add screenshot of provider detection results]
 
-[Add screenshot of the report generator]
+<img width="1919" height="958" alt="image" src="https://github.com/user-attachments/assets/328444e7-3113-43ae-b945-ef77ae81e3af" />
 
-[Add GIF of the validation and report workflow]
+
+<img width="1134" height="774" alt="image" src="https://github.com/user-attachments/assets/6568da4d-92f8-4bd7-8587-e07c070900c9" />
+
+
+
+
+https://github.com/user-attachments/assets/7457353e-275e-42b9-ae9d-1c47d1c5dbb7
+
+
 
 ## Installation
 
