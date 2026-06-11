@@ -1,4 +1,4 @@
-const chatStore = window.APIKeyValidatorChatStore;
+const chatStore = window.ApiKeyValidatorChatStore;
 
 const state = {
   apiKey: "",
@@ -45,15 +45,82 @@ const els = {
 };
 
 const START_ROWS = [
-  "Google",
-  "OpenAI",
+  "AB Tasty",
+  "Algolia",
+  "Amazon Web Services",
+  "Amplitude",
   "Anthropic",
-  "DeepSeek",
-  "Slack",
-  "GitHub",
-  "Stripe",
+  "Asana",
+  "Azure Application Insights",
+  "Bazaarvoice",
+  "Bing Maps",
+  "Bitly",
+  "Branch.io",
+  "BrowserStack",
+  "Buildkite",
+  "ButterCMS",
+  "Calendly",
+  "CircleCI",
   "Cloudflare",
-  "AWS"
+  "Contentful",
+  "Cypress",
+  "Datadog",
+  "DeepSeek",
+  "Delighted",
+  "DeviantArt",
+  "Dropbox",
+  "Facebook / Meta",
+  "Freshdesk",
+  "GitHub",
+  "GitLab",
+  "Google",
+  "Grafana",
+  "Help Scout",
+  "Heroku",
+  "HubSpot",
+  "Infura",
+  "Instagram",
+  "Ipstack",
+  "Iterable",
+  "JumpCloud",
+  "Keen.io",
+  "LinkedIn",
+  "Lokalise",
+  "Loqate",
+  "Mailchimp",
+  "Mailgun",
+  "Mapbox",
+  "Microsoft Azure",
+  "Microsoft Teams",
+  "New Relic",
+  "npm",
+  "OpenAI",
+  "Opsgenie",
+  "PagerDuty",
+  "PayPal",
+  "Pendo",
+  "Pivotal Tracker",
+  "Razorpay",
+  "Salesforce",
+  "Sauce Labs",
+  "SendGrid",
+  "Shodan",
+  "Slack",
+  "SonarCloud",
+  "Spotify",
+  "Square",
+  "Stripe",
+  "Telegram",
+  "Travis CI",
+  "Twilio",
+  "Twitter / X",
+  "Visual Studio App Center",
+  "WakaTime",
+  "Weglot",
+  "WP Engine",
+  "YouTube",
+  "Zapier",
+  "Zendesk"
 ];
 
 function escapeHtml(value) {
@@ -368,7 +435,7 @@ function modelLinesForReport() {
 
 function buildReport() {
   const provider = state.providerLabel || "Unknown provider";
-  const checked = state.checked.length ? state.checked.join(" -> ") : "Google, OpenAI, Anthropic, DeepSeek, Slack, GitHub, Stripe, Cloudflare, AWS, and other supported companies";
+  const checked = state.checked.length ? state.checked.join(" -> ") : "Supported companies listed in the provider registry";
   const models = availableModels();
   const program = els.programName.value.trim() || "[Program / company]";
   const reporter = els.reporterField.value.trim() || "[Reporter / handle]";
@@ -397,7 +464,7 @@ Reporter: ${reporter}
 ## Steps to Reproduce
 1. Locate the exposed credential in the affected asset.
 2. Record only a masked version of the secret in evidence.
-3. Submit the credential to APIKeyValidator validation.
+3. Submit the credential to API Key Validator validation.
 4. Confirm the detected provider and available checks/models.
 5. Avoid destructive prompts, high-volume requests, or actions outside the program scope.
 
@@ -416,7 +483,7 @@ ${modelLinesForReport()}
 
 ## Screenshots
 - [Add screenshot of the exposed location with the secret masked]
-- [Add screenshot of APIKeyValidator validation output]
+- [Add screenshot of API Key Validator validation output]
 
 ## Recommended Fix
 1. Revoke or rotate the exposed credential immediately.
@@ -456,7 +523,7 @@ async function copyReport() {
 
 function reportFilename(extension) {
   const provider = (state.providerLabel || "provider").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return `apikeyvalidator-${provider || "provider"}-report.${extension}`;
+  return `api-key-validator-${provider || "provider"}-report.${extension}`;
 }
 
 function downloadBlob(filename, blob) {
@@ -486,7 +553,7 @@ function exportHtml() {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>APIKeyValidator Report</title>
+  <title>API Key Validator Report</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.55; margin: 40px; color: #171923; }
     pre { white-space: pre-wrap; font-family: inherit; }

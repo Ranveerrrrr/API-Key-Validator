@@ -1,13 +1,13 @@
-# APIKeyValidator
+# API Key Validator
 
-APIKeyValidator is a local web application for safely identifying and validating exposed API credentials during authorized security testing and bug bounty work.
+API Key Validator is a local web application for safely identifying and validating exposed API credentials during authorized security testing and bug bounty work.
 
 The app accepts a pasted key or credential snippet, identifies the provider, and attempts provider-specific detection and validation across supported companies. For AI providers, it lists available chat-capable models and lets you test approved prompts against a selected model. For all supported providers, it can generate a professional bug bounty report with neutral reporter fields, impact language, remediation guidance, and export options.
 
 ## Features
 
 - Auto-detects provider from a single pasted key or credential snippet.
-- Supports Google, OpenAI, Anthropic, DeepSeek, Slack, GitHub, Stripe, Cloudflare, AWS, and many other companies listed below.
+- Supports every company listed in the Supported Providers section below.
 - Lists available models/checks with consistent green/red status indicators.
 - Supports chat for validated AI model providers.
 - Keeps chat history per provider, model, and hashed key across model switches, refreshes, and server restarts without storing the raw key.
@@ -158,6 +158,85 @@ Reports use neutral reporter fields and do not automatically include a personal 
 ## Supported Providers
 
 Providers are listed by company first, with supported key types underneath each company.
+
+### Supported Company Index (76 Companies)
+
+- AB Tasty
+- Algolia
+- Amazon Web Services
+- Amplitude
+- Anthropic
+- Asana
+- Azure Application Insights
+- Bazaarvoice
+- Bing Maps
+- Bitly
+- Branch.io
+- BrowserStack
+- Buildkite
+- ButterCMS
+- Calendly
+- CircleCI
+- Cloudflare
+- Contentful
+- Cypress
+- Datadog
+- DeepSeek
+- Delighted
+- DeviantArt
+- Dropbox
+- Facebook / Meta
+- Freshdesk
+- GitHub
+- GitLab
+- Google
+- Grafana
+- Help Scout
+- Heroku
+- HubSpot
+- Infura
+- Instagram
+- Ipstack
+- Iterable
+- JumpCloud
+- Keen.io
+- LinkedIn
+- Lokalise
+- Loqate
+- Mailchimp
+- Mailgun
+- Mapbox
+- Microsoft Azure
+- Microsoft Teams
+- New Relic
+- npm
+- OpenAI
+- Opsgenie
+- PagerDuty
+- PayPal
+- Pendo
+- Pivotal Tracker
+- Razorpay
+- Salesforce
+- Sauce Labs
+- SendGrid
+- Shodan
+- Slack
+- SonarCloud
+- Spotify
+- Square
+- Stripe
+- Telegram
+- Travis CI
+- Twilio
+- Twitter / X
+- Visual Studio App Center
+- WakaTime
+- Weglot
+- WP Engine
+- YouTube
+- Zapier
+- Zendesk
 
 ### AB Tasty
 
@@ -520,7 +599,7 @@ Providers are listed by company first, with supported key types underneath each 
 
 ## Validation Notes
 
-Some credentials require extra context such as a tenant ID, application ID, account domain, username, project ID, or matching secret. APIKeyValidator detects those formats and reports the missing context instead of guessing or running unsafe requests.
+Some credentials require extra context such as a tenant ID, application ID, account domain, username, project ID, or matching secret. API Key Validator detects those formats and reports the missing context instead of guessing or running unsafe requests.
 
 Provider checks are intentionally low-impact. Avoid endpoints that send messages, mutate data, create resources, or consume significant paid quota unless the program explicitly authorizes that testing.
 
@@ -551,7 +630,7 @@ Provider contributions should include:
 
 ## Disclaimer and Responsible Usage
 
-Use APIKeyValidator only on assets and credentials that you are authorized to test.
+Use API Key Validator only on assets and credentials that you are authorized to test.
 
 Do not use this tool to access accounts, data, systems, or services without explicit permission. Do not run high-volume prompts, send messages, create resources, mutate data, or intentionally incur costs unless the bug bounty program or assessment scope clearly allows it.
 
@@ -560,7 +639,7 @@ Treat exposed credentials as compromised. Reports should include masked evidence
 ## Credits
 
 - KeyHacks by streaak is credited as the provider/key-format data and research baseline used to map how many API keys look and how they can be checked.
-- Additional provider patterns, validation behavior, and report workflow were added through APIKeyValidator research.
+- Additional provider patterns, validation behavior, and report workflow were added through API Key Validator research.
 - UI inspiration credit: [coffinxp](https://github.com/coffinxp). The dashboard style was inspired by a video/UI workflow from coffinxp.
 
 ## References

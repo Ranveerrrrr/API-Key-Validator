@@ -1,5 +1,5 @@
 (function initChatStore(root) {
-  const PREFIX = "apikeyvalidator-chat-v1";
+  const PREFIX = "api-key-validator-chat-v1";
 
   function hashSecret(value) {
     const text = String(value || "");
@@ -50,5 +50,5 @@
   if (typeof module !== "undefined" && module.exports) {
     module.exports = api;
   }
-  root.APIKeyValidatorChatStore = api;
+  root.ApiKeyValidatorChatStore = api;
 })(typeof globalThis !== "undefined" ? globalThis : window);
