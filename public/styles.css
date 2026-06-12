@@ -83,6 +83,15 @@ button {
   letter-spacing: 0;
   text-align: left;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.brand-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
   display: block;
 }
 
