@@ -74,6 +74,7 @@ const START_ROWS = [
   "GitHub",
   "GitLab",
   "Google",
+  "Groq",
   "Grafana",
   "Help Scout",
   "Heroku",

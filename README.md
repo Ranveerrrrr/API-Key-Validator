@@ -166,7 +166,7 @@ Reports use neutral reporter fields and do not automatically include a personal 
 
 Providers are listed by company first, with supported key types underneath each company.
 
-### Supported Company Index (76 Companies)
+### Supported Company Index (77 Companies)
 
 - AB Tasty
 - Algolia
@@ -197,6 +197,7 @@ Providers are listed by company first, with supported key types underneath each 
 - GitHub
 - GitLab
 - Google
+- Groq
 - Grafana
 - Help Scout
 - Heroku
@@ -388,6 +389,10 @@ Providers are listed by company first, with supported key types underneath each 
 - Firebase Cloud Messaging Key
 - YouTube API Key
 
+### Groq
+
+- Groq API Key
+
 ### Grafana
 
 - Grafana Access Token
@@ -573,6 +578,8 @@ Providers are listed by company first, with supported key types underneath each 
 
 - Twitter API Secret
 - Twitter Bearer Token
+- Grok API Key
+- xAI API Key
 
 ### Visual Studio App Center
 

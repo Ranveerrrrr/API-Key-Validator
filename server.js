@@ -52,6 +52,24 @@ const PROVIDERS = {
       { id: "deepseek-chat", label: "DeepSeek Chat" },
       { id: "deepseek-reasoner", label: "DeepSeek Reasoner" }
     ]
+  },
+  groq: {
+    label: "Groq",
+    catalog: [
+      { id: "llama-3.3-70b-versatile", label: "Llama 3.3 70B Versatile" },
+      { id: "llama-3.1-8b-instant", label: "Llama 3.1 8B Instant" },
+      { id: "moonshotai/kimi-k2-instruct", label: "Kimi K2 Instruct" },
+      { id: "openai/gpt-oss-120b", label: "GPT OSS 120B" }
+    ]
+  },
+  xai: {
+    label: "X",
+    catalog: [
+      { id: "latest", label: "Grok Latest" },
+      { id: "grok-4.3", label: "Grok 4.3" },
+      { id: "grok-4.3-fast", label: "Grok 4.3 Fast" },
+      { id: "grok-420-reasoning", label: "Grok 420 Reasoning" }
+    ]
   }
 };
 
@@ -290,6 +308,36 @@ async function listDeepSeekModels(apiKey) {
   return mergeCatalog("deepseek", apiModels);
 }
 
+async function listGroqModels(apiKey) {
+  const data = await apiFetch("groq", "https://api.groq.com/openai/v1/models", {
+    headers: { authorization: `Bearer ${apiKey}` }
+  });
+  const apiModels = (Array.isArray(data.data) ? data.data : []).map((model) => ({
+    id: model.id,
+    label: model.id,
+    available: true,
+    methods: ["chat.completions"],
+    owner: model.owned_by || "groq"
+  }));
+  return mergeCatalog("groq", apiModels, { sortAvailableFirst: true });
+}
+
+async function listXAIModels(apiKey) {
+  const data = await apiFetch("xai", "https://api.x.ai/v1/models", {
+    headers: { authorization: `Bearer ${apiKey}` }
+  });
+  const apiModels = (Array.isArray(data.data) ? data.data : [])
+    .filter((model) => !/(image|video)/i.test(model.id || ""))
+    .map((model) => ({
+      id: model.id,
+      label: model.id,
+      available: true,
+      methods: ["chat.completions"],
+      owner: model.owned_by || "xai"
+    }));
+  return mergeCatalog("xai", apiModels, { sortAvailableFirst: true });
+}
+
 function providerDetectionOrder(apiKey) {
   const key = apiKey.toLowerCase();
   const preferred = ["google"];
@@ -297,8 +345,10 @@ function providerDetectionOrder(apiKey) {
   if (key.startsWith("sk-ant-")) preferred.push("anthropic");
   if (key.startsWith("sk-")) preferred.push("openai", "deepseek", "anthropic");
   if (key.startsWith("ds-")) preferred.push("deepseek");
+  if (key.startsWith("gsk_")) preferred.push("groq");
+  if (key.startsWith("xai-")) preferred.push("xai");
 
-  preferred.push("openai", "anthropic", "deepseek");
+  preferred.push("openai", "anthropic", "deepseek", "groq", "xai");
   return [...new Set(preferred)];
 }
 
@@ -345,7 +395,9 @@ async function detectProviderModels(apiKey) {
     google: listGoogleModels,
     openai: listOpenAIModels,
     anthropic: listAnthropicModels,
-    deepseek: listDeepSeekModels
+    deepseek: listDeepSeekModels,
+    groq: listGroqModels,
+    xai: listXAIModels
   };
   const attempts = [];
 
@@ -519,6 +571,36 @@ async function chatDeepSeek(apiKey, model, history, message) {
   return extractChatCompletionReply(data);
 }
 
+async function chatGroq(apiKey, model, history, message) {
+  const data = await apiFetch("groq", "https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model,
+      messages: chatMessages(history, message),
+      temperature: 0.7,
+      max_tokens: 4096,
+      stream: false
+    })
+  });
+  return extractChatCompletionReply(data);
+}
+
+async function chatXAI(apiKey, model, history, message) {
+  const data = await apiFetch("xai", "https://api.x.ai/v1/chat/completions", {
+    method: "POST",
+    headers: { authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model,
+      messages: chatMessages(history, message),
+      temperature: 0.7,
+      max_tokens: 4096,
+      stream: false
+    })
+  });
+  return extractChatCompletionReply(data);
+}
+
 async function handleChat(req, res) {
   try {
     const body = await readJsonBody(req);
@@ -535,7 +617,9 @@ async function handleChat(req, res) {
       google: chatGoogle,
       openai: chatOpenAI,
       anthropic: chatAnthropic,
-      deepseek: chatDeepSeek
+      deepseek: chatDeepSeek,
+      groq: chatGroq,
+      xai: chatXAI
     }[provider];
 
     const reply = await chat(apiKey, model, body.history, message);
