@@ -16,17 +16,6 @@ test("every provider has a sample that detects itself", () => {
   assert.deepEqual(missing, []);
 });
 
-test("similar AI key prefixes stay provider-specific", () => {
-  assert.deepEqual(
-    detectProviderSpecs("sk-or-v1-testtoken1234567890abcdef").map((spec) => spec.id),
-    ["openrouter"]
-  );
-  assert.deepEqual(
-    detectProviderSpecs("sk-proj-testtoken1234567890abcdef").map((spec) => spec.id),
-    ["openai"]
-  );
-});
-
 test("registry contains upstream research providers plus AI providers", () => {
   const ids = new Set(PROVIDER_SPECS.map((spec) => spec.id));
   for (const id of [
@@ -51,7 +40,6 @@ test("registry contains upstream research providers plus AI providers", () => {
     "datadog",
     "delighted",
     "deviantart",
-    "discord",
     "dropbox",
     "facebook",
     "freshdesk",
@@ -79,7 +67,6 @@ test("registry contains upstream research providers plus AI providers", () => {
     "microsoft-teams",
     "newrelic",
     "npm",
-    "openrouter",
     "opsgenie",
     "pagerduty",
     "paypal",
@@ -95,7 +82,6 @@ test("registry contains upstream research providers plus AI providers", () => {
     "spotify",
     "square",
     "stripe",
-    "supabase",
     "telegram",
     "travis-ci",
     "twilio",

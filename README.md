@@ -166,7 +166,7 @@ Reports use neutral reporter fields and do not automatically include a personal 
 
 Providers are listed by company first, with supported key types underneath each company.
 
-### Supported Company Index (80 Companies)
+### Supported Company Index (77 Companies)
 
 - AB Tasty
 - Algolia
@@ -191,7 +191,6 @@ Providers are listed by company first, with supported key types underneath each 
 - DeepSeek
 - Delighted
 - DeviantArt
-- Discord
 - Dropbox
 - Facebook / Meta
 - Freshdesk
@@ -220,7 +219,6 @@ Providers are listed by company first, with supported key types underneath each 
 - New Relic
 - npm
 - OpenAI
-- OpenRouter
 - Opsgenie
 - PagerDuty
 - PayPal
@@ -236,7 +234,6 @@ Providers are listed by company first, with supported key types underneath each 
 - Spotify
 - Square
 - Stripe
-- Supabase
 - Telegram
 - Travis CI
 - Twilio
@@ -353,11 +350,6 @@ Providers are listed by company first, with supported key types underneath each 
 
 - DeviantArt Access Token
 - DeviantArt Client Secret
-
-### Discord
-
-- Discord Bot Token
-- Discord Webhook URL
 
 ### Dropbox
 
@@ -500,10 +492,6 @@ Providers are listed by company first, with supported key types underneath each 
 - OpenAI Project Key
 - OpenAI Service Account Key
 
-### OpenRouter
-
-- OpenRouter API Key
-
 ### Opsgenie
 
 - Opsgenie API Key
@@ -572,13 +560,6 @@ Providers are listed by company first, with supported key types underneath each 
 - Stripe Live Secret Key
 - Stripe Restricted Key
 - Stripe Publishable Key
-
-### Supabase
-
-- Supabase Anon Key
-- Supabase Service Role Key
-- Supabase Secret Key
-- Supabase Publishable Key
 
 ### Telegram
 
