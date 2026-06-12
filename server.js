@@ -34,6 +34,15 @@ const PROVIDERS = {
       { id: "o4-mini", label: "o4 mini" }
     ]
   },
+  openrouter: {
+    label: "OpenRouter",
+    catalog: [
+      { id: "openai/gpt-4o", label: "OpenAI GPT-4o" },
+      { id: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" },
+      { id: "google/gemini-2.0-flash-001", label: "Gemini 2.0 Flash" },
+      { id: "meta-llama/llama-3.1-70b-instruct", label: "Llama 3.1 70B" }
+    ]
+  },
   anthropic: {
     label: "Anthropic",
     catalog: [
@@ -150,7 +159,7 @@ function getApiKey(body) {
 
 function getModelId(value) {
   const model = normalizeModelName(value).trim();
-  if (!/^[A-Za-z0-9._:-]+$/.test(model)) {
+  if (!/^[A-Za-z0-9._:/-]+$/.test(model)) {
     const error = new Error("Invalid model id");
     error.statusCode = 400;
     throw error;
@@ -277,6 +286,22 @@ async function listOpenAIModels(apiKey) {
   return mergeCatalog("openai", apiModels, { sortAvailableFirst: true });
 }
 
+async function listOpenRouterModels(apiKey) {
+  const data = await apiFetch("openrouter", "https://openrouter.ai/api/v1/models", {
+    headers: { authorization: `Bearer ${apiKey}` }
+  });
+  const apiModels = (Array.isArray(data.data) ? data.data : [])
+    .filter((model) => !/(embedding|moderation)/i.test(model.id || ""))
+    .map((model) => ({
+      id: model.id,
+      label: model.name || model.id,
+      available: true,
+      methods: ["chat.completions"],
+      owner: "openrouter"
+    }));
+  return mergeCatalog("openrouter", apiModels, { sortAvailableFirst: true });
+}
+
 async function listAnthropicModels(apiKey) {
   const data = await apiFetch("anthropic", "https://api.anthropic.com/v1/models", {
     headers: {
@@ -342,13 +367,14 @@ function providerDetectionOrder(apiKey) {
   const key = apiKey.toLowerCase();
   const preferred = ["google"];
 
+  if (key.startsWith("sk-or-v1-")) preferred.push("openrouter");
   if (key.startsWith("sk-ant-")) preferred.push("anthropic");
-  if (key.startsWith("sk-")) preferred.push("openai", "deepseek", "anthropic");
-  if (key.startsWith("ds-")) preferred.push("deepseek");
+  if (key.startsWith("sk-")) preferred.push("openai");
+  if (key.startsWith("ds-") || key.includes("deepseek")) preferred.push("deepseek");
   if (key.startsWith("gsk_")) preferred.push("groq");
   if (key.startsWith("xai-")) preferred.push("xai");
 
-  preferred.push("openai", "anthropic", "deepseek", "groq", "xai");
+  preferred.push("openai", "anthropic", "openrouter", "groq", "xai");
   return [...new Set(preferred)];
 }
 
@@ -394,6 +420,7 @@ async function detectProviderModels(apiKey) {
   const listModels = {
     google: listGoogleModels,
     openai: listOpenAIModels,
+    openrouter: listOpenRouterModels,
     anthropic: listAnthropicModels,
     deepseek: listDeepSeekModels,
     groq: listGroqModels,
@@ -540,6 +567,21 @@ async function chatOpenAI(apiKey, model, history, message) {
   return extractOpenAIReply(data);
 }
 
+async function chatOpenRouter(apiKey, model, history, message) {
+  const data = await apiFetch("openrouter", "https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: { authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model,
+      messages: chatMessages(history, message),
+      temperature: 0.7,
+      max_tokens: 4096,
+      stream: false
+    })
+  });
+  return extractChatCompletionReply(data);
+}
+
 async function chatAnthropic(apiKey, model, history, message) {
   const data = await apiFetch("anthropic", "https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -616,6 +658,7 @@ async function handleChat(req, res) {
     const chat = {
       google: chatGoogle,
       openai: chatOpenAI,
+      openrouter: chatOpenRouter,
       anthropic: chatAnthropic,
       deepseek: chatDeepSeek,
       groq: chatGroq,
