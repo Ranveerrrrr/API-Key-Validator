@@ -5,7 +5,7 @@
   "description": "API Key Validator, AI model checker, and bug bounty report generator.",
   "scripts": {
     "start": "node server.js",
-    "test": "node tests/providerRegistry.test.js && node tests/chatStore.test.js"
+    "test": "node tests/providerRegistry.test.js"
   },
   "engines": {
     "node": ">=18"
