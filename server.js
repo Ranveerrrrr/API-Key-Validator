@@ -1,7 +1,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
-const { validateDetectedProvider } = require("./lib/providerRegistry");
+const { PROVIDER_SPECS, validateDetectedProvider } = require("./lib/providerRegistry");
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8099);
@@ -79,6 +79,35 @@ function sendJson(res, statusCode, payload) {
 function sendText(res, statusCode, message) {
   res.writeHead(statusCode, { "content-type": "text/plain; charset=utf-8" });
   res.end(message);
+}
+
+function providerDetectionInfo(providerId) {
+  const spec = PROVIDER_SPECS.find((item) => item.id === providerId);
+  if (!spec) return null;
+
+  const patternText = spec.patterns.map((pattern) => pattern.source);
+  const hints = [];
+  if (spec.id === "google") {
+    hints.push("Google API keys commonly start with AIza.");
+    hints.push("Firebase Cloud Messaging server keys commonly include an AAAA... token shape.");
+    hints.push("Google service account JSON contains type=service_account and a private key/client email pair.");
+  } else if (spec.sample) {
+    hints.push(`Sample shape: ${spec.sample}`);
+  }
+  if (spec.requiresContext) hints.push(spec.requiresContext);
+  if (spec.validation?.url) hints.push(`Validation endpoint: ${spec.validation.url.replace("{token}", "[token]")}`);
+
+  return {
+    company: spec.company,
+    keyTypes: spec.keyTypes,
+    patterns: patternText,
+    hints,
+    sources: [
+      "Local provider registry",
+      "https://github.com/streaak/keyhacks/blob/master/README.md",
+      spec.validation?.url ? spec.validation.url.replace("{token}", "[token]") : null
+    ].filter(Boolean)
+  };
 }
 
 function safeFilePath(urlPath) {
@@ -392,7 +421,8 @@ async function handleModels(req, res) {
       provider: result.provider,
       providerLabel: result.providerLabel,
       checked: result.checked,
-      models: result.models
+      models: result.models,
+      detectionInfo: providerDetectionInfo(result.provider)
     });
   } catch (error) {
     sendJson(res, error.statusCode || 500, {

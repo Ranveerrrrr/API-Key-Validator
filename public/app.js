@@ -4,6 +4,7 @@ const state = {
   apiKey: "",
   provider: "",
   providerLabel: "",
+  detectionInfo: null,
   checked: [],
   models: [],
   selectedModel: "",
@@ -16,6 +17,7 @@ const els = {
   brandButton: document.querySelector("#brandButton"),
   headerReportButton: document.querySelector("#headerReportButton"),
   detectedProvider: document.querySelector("#detectedProvider"),
+  detectionInfoPanel: document.querySelector("#detectionInfoPanel"),
   apiKey: document.querySelector("#apiKey"),
   authButton: document.querySelector("#authButton"),
   clearKeyButton: document.querySelector("#clearKeyButton"),
@@ -180,10 +182,36 @@ function renderDetector() {
   if (!state.providerLabel) {
     els.detectedProvider.className = "detector-strip";
     els.detectedProvider.textContent = "AUTO DETECT";
+    els.detectionInfoPanel.hidden = true;
+    els.detectionInfoPanel.innerHTML = "";
     return;
   }
   els.detectedProvider.className = "detector-strip detected";
-  els.detectedProvider.textContent = `${state.providerLabel} DETECTED`;
+  els.detectedProvider.innerHTML = `
+    <span>${escapeHtml(state.providerLabel)} DETECTED</span>
+    <button id="detectionInfoButton" class="mini-icon-button" type="button" aria-label="Detection info" title="Detection info">i</button>
+  `;
+  renderDetectionInfoPanel();
+}
+
+function renderDetectionInfoPanel() {
+  const info = state.detectionInfo;
+  if (!info || els.detectionInfoPanel.hidden) return;
+  const hints = (info.hints || []).map((hint) => `<li>${escapeHtml(hint)}</li>`).join("");
+  const keyTypes = (info.keyTypes || []).map((type) => `<li>${escapeHtml(type)}</li>`).join("");
+  const patterns = (info.patterns || []).map((pattern) => `<code>${escapeHtml(pattern)}</code>`).join("");
+  const sources = (info.sources || []).map((source) => `<li>${escapeHtml(source)}</li>`).join("");
+  els.detectionInfoPanel.innerHTML = `
+    <div class="info-title">${escapeHtml(info.company || state.providerLabel)}</div>
+    <div class="info-label">Key types</div>
+    <ul>${keyTypes}</ul>
+    <div class="info-label">Why it matched</div>
+    <ul>${hints}</ul>
+    <div class="info-label">Patterns</div>
+    <div class="pattern-list">${patterns}</div>
+    <div class="info-label">Sources</div>
+    <ul>${sources}</ul>
+  `;
 }
 
 function renderSkeletonModels() {
@@ -236,9 +264,27 @@ function renderMessages() {
     return;
   }
 
-  els.messages.innerHTML = state.messages.map((message) => `
-    <article class="message ${escapeHtml(message.role)}">${escapeHtml(message.text)}</article>
-  `).join("");
+  els.messages.innerHTML = state.messages.map((message, index) => {
+    const details = message.requestDetails ? `
+      <div class="request-tools">
+        <button class="mini-icon-button request-toggle" type="button" data-request-index="${index}" aria-label="Show request" title="Show request">{}</button>
+        <button class="mini-icon-button request-copy" type="button" data-copy-index="${index}" aria-label="Copy curl" title="Copy curl">C</button>
+      </div>
+      <details class="request-details" id="requestDetails${index}">
+        <summary>Request</summary>
+        <div class="info-label">JSON</div>
+        <pre>${escapeHtml(message.requestDetails.json)}</pre>
+        <div class="info-label">curl</div>
+        <pre>${escapeHtml(message.requestDetails.curl)}</pre>
+      </details>
+    ` : "";
+    return `
+      <article class="message ${escapeHtml(message.role)}">
+        <div>${escapeHtml(message.text)}</div>
+        ${details}
+      </article>
+    `;
+  }).join("");
   els.messages.scrollTop = els.messages.scrollHeight;
 }
 
@@ -289,6 +335,24 @@ async function postJson(url, payload) {
   return data;
 }
 
+function commandQuote(value) {
+  return String(value).replaceAll("'", "'\\''");
+}
+
+function buildChatRequestDetails(payload) {
+  const visiblePayload = {
+    ...payload,
+    apiKey: "$API_KEY"
+  };
+  const json = JSON.stringify(visiblePayload, null, 2);
+  const minified = JSON.stringify(visiblePayload);
+  const shellJson = commandQuote(minified).replace("\"apiKey\":\"$API_KEY\"", "\"apiKey\":\"'\"$API_KEY\"'\"");
+  return {
+    json,
+    curl: `API_KEY='paste_key_here'\ncurl -s -X POST '${window.location.origin}/api/chat' \\\n  -H 'content-type: application/json' \\\n  --data-raw '${shellJson}'`
+  };
+}
+
 async function authenticate() {
   const apiKey = els.apiKey.value.trim();
   if (!apiKey) {
@@ -301,12 +365,16 @@ async function authenticate() {
   els.authButton.textContent = "CHECKING";
   els.detectedProvider.textContent = "CHECKING PROVIDERS";
   els.detectedProvider.className = "detector-strip";
+  state.detectionInfo = null;
+  els.detectionInfoPanel.hidden = true;
+  els.detectionInfoPanel.innerHTML = "";
 
   try {
     const data = await postJson("/api/models", { apiKey });
     state.apiKey = apiKey;
     state.provider = data.provider || "";
     state.providerLabel = data.providerLabel || "";
+    state.detectionInfo = data.detectionInfo || null;
     state.checked = data.checked || [];
     state.models = data.models || [];
     const firstChat = state.models.find((model) => isChatCapable(model));
@@ -325,6 +393,7 @@ async function authenticate() {
     state.apiKey = "";
     state.provider = "";
     state.providerLabel = "";
+    state.detectionInfo = null;
     state.checked = [];
     state.models = [];
     state.selectedModel = "";
@@ -346,6 +415,7 @@ function clearApiKey() {
   state.apiKey = "";
   state.provider = "";
   state.providerLabel = "";
+  state.detectionInfo = null;
   state.checked = [];
   state.models = [];
   state.selectedModel = "";
@@ -386,7 +456,15 @@ async function sendMessage(event) {
     .filter((item) => item.role === "user" || item.role === "assistant")
     .map((item) => ({ role: item.role, text: item.text }));
 
-  state.messages.push({ role: "user", text: message });
+  const chatPayload = {
+    apiKey: state.apiKey,
+    provider: state.provider,
+    model: state.selectedModel,
+    history,
+    message
+  };
+
+  state.messages.push({ role: "user", text: message, requestDetails: buildChatRequestDetails(chatPayload) });
   saveSelectedMessages();
   els.prompt.value = "";
   resizePrompt();
@@ -394,13 +472,7 @@ async function sendMessage(event) {
   setLoading(true);
 
   try {
-    const data = await postJson("/api/chat", {
-      apiKey: state.apiKey,
-      provider: state.provider,
-      model: state.selectedModel,
-      history,
-      message
-    });
+    const data = await postJson("/api/chat", chatPayload);
     state.messages.push({ role: "assistant", text: data.reply || "No reply returned." });
   } catch (error) {
     state.messages.push({ role: "error", text: error.message });
@@ -640,6 +712,31 @@ els.authButton.addEventListener("click", authenticate);
 els.clearKeyButton.addEventListener("click", clearApiKey);
 els.clearChatButton.addEventListener("click", clearChat);
 els.chatForm.addEventListener("submit", sendMessage);
+els.detectedProvider.addEventListener("click", (event) => {
+  if (!event.target.closest("#detectionInfoButton")) return;
+  if (!state.detectionInfo) return;
+  els.detectionInfoPanel.hidden = !els.detectionInfoPanel.hidden;
+  renderDetectionInfoPanel();
+});
+els.messages.addEventListener("click", async (event) => {
+  const toggle = event.target.closest("[data-request-index]");
+  if (toggle) {
+    const details = document.querySelector(`#requestDetails${toggle.dataset.requestIndex}`);
+    if (details) details.open = !details.open;
+    return;
+  }
+
+  const copy = event.target.closest("[data-copy-index]");
+  if (!copy) return;
+  const message = state.messages[Number(copy.dataset.copyIndex)];
+  if (!message?.requestDetails?.curl) return;
+  try {
+    await navigator.clipboard.writeText(message.requestDetails.curl);
+    showToast("curl copied.");
+  } catch {
+    showToast("Unable to copy curl.");
+  }
+});
 els.brandButton.addEventListener("click", openReportModal);
 els.headerReportButton.addEventListener("click", openReportModal);
 els.closeReportButton.addEventListener("click", closeReportModal);
