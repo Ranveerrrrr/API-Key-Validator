@@ -1,5 +1,12 @@
 # API Key Validator
 
+![Node.js 18+](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
+![No dependencies](https://img.shields.io/badge/dependencies-none-2ea44f)
+![Public repository](https://img.shields.io/badge/repository-public-0969da?logo=github)
+![Bug bounty workflow](https://img.shields.io/badge/workflow-bug%20bounty-8a2be2)
+![Secret scanning](https://img.shields.io/badge/focus-secret%20scanning-f97316)
+![Responsible use](https://img.shields.io/badge/use-authorized%20testing%20only-red)
+
 API Key Validator is a local web application for safely identifying and validating exposed API credentials during authorized security testing and bug bounty work.
 
 The app accepts a pasted key or credential snippet, identifies the provider, and attempts provider-specific detection and validation across supported companies. For AI providers, it lists available chat-capable models and lets you test approved prompts against a selected model. For all supported providers, it can generate a professional bug bounty report with neutral reporter fields, impact language, remediation guidance, and export options.
